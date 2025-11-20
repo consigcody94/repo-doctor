@@ -6,18 +6,121 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-16%2B-green)](https://nodejs.org/)
 
-**repo-doctor** is a production-ready CLI tool that analyzes your Git repositories and provides comprehensive health reports with security scanning, commit analysis, file metrics, and actionable recommendations.
+**repo-doctor** is a comprehensive CLI tool that performs deep health checks on your Git repositories. It scans for security vulnerabilities, analyzes commit patterns, identifies large files, detects stale branches, and provides actionable recommendations to improve your repository's health and maintainability.
+
+## 🎯 Why repo-doctor?
+
+Managing Git repositories can be complex, especially as they grow. Common issues include:
+
+- 🔓 **Security risks**: Accidentally committed API keys, passwords, or tokens
+- 📦 **Repository bloat**: Large files committed to version control
+- 🌿 **Branch clutter**: Dozens of stale branches from old features
+- 📊 **Low visibility**: No clear picture of repository health or activity
+- 🚨 **Hidden issues**: Problems that slow down clones and deployments
+
+**repo-doctor solves these problems** by providing:
+- Automated security scanning with pattern detection
+- Comprehensive metrics and insights
+- Clear, actionable recommendations
+- Multiple output formats for different workflows
+- Fast analysis even on large repositories (1000s of files)
 
 ## ✨ Features
 
-- 🔒 **Security Scanning**: Detect secrets, API keys, and sensitive files
-- 📊 **Repository Analytics**: Commit patterns, contributor insights, and activity metrics
-- 📁 **File Analysis**: Large file detection, file type distribution, and repository size
-- 🌿 **Branch Health**: Identify stale branches and track active development
-- 💯 **Health Score**: Get an overall grade (A-F) with detailed breakdown
-- 📝 **Multiple Output Formats**: Terminal (beautiful), JSON, and Markdown
-- ⚡ **Fast & Efficient**: Optimized for large repositories
-- 🎨 **Beautiful Terminal UI**: Colorful, organized, easy-to-read reports
+### 🔒 Security Scanning
+Detects **8 types of secrets** and sensitive data:
+- **AWS Access Keys** (AKIA...) - Critical cloud credentials
+- **GitHub Personal Access Tokens** (ghp_...) - Repository access
+- **Generic API Keys** - Third-party service credentials
+- **Private SSH/RSA Keys** - Infrastructure access
+- **Passwords in Code** - Hardcoded authentication
+- **JWT Tokens** - Session and authentication tokens
+- **Slack Tokens** (xox...) - Messaging platform access
+- **Database Connection Strings** - MongoDB, MySQL, PostgreSQL URLs
+
+**Sensitive file detection:**
+- `.env` and `.env.*` files
+- `credentials.json`, `secrets.yml`
+- Private keys (`id_rsa`, `id_dsa`)
+- API configuration files (`.npmrc`, `.pypirc`)
+
+### 📊 Repository Analytics
+**Commit Analysis:**
+- Total commits and commit frequency (Very Active → Very Low)
+- Average commits per day (tracks development velocity)
+- Commit patterns (weekday vs weekend activity)
+- Largest commits (identifies bulk changes)
+- Contributor count and diversity
+
+**What this tells you:**
+- Is the repository actively maintained?
+- Are there consistent development patterns?
+- How many people are contributing?
+- When was the last activity?
+
+### 📁 File Analysis
+**Comprehensive file metrics:**
+- **Total repository size** - Helps identify bloated repos
+- **Large file detection** - Configurable threshold (default: 10MB)
+- **File type distribution** - See what makes up your codebase
+- **Binary file count** - Identifies non-text files
+
+**Common issues detected:**
+- Large binary files in Git (should use Git LFS)
+- Committed dependencies (`node_modules/`, `.venv/`)
+- Build artifacts (`dist/`, `build/`, `*.exe`)
+
+### 🌿 Branch Health
+**Branch analytics:**
+- Total branch count
+- Active branches (recently updated)
+- Stale branches (configurable threshold, default: 90 days)
+- Default branch identification
+
+**Why this matters:**
+- Too many branches slow down Git operations
+- Stale branches indicate abandoned work
+- Helps maintain a clean repository structure
+
+### 💯 Health Score & Grading
+**Intelligent scoring algorithm:**
+- **Grade A (90-100)**: Excellent health, minimal issues
+- **Grade B (80-89)**: Good health, minor improvements needed
+- **Grade C (70-79)**: Fair health, several issues to address
+- **Grade D (60-69)**: Poor health, significant problems
+- **Grade F (<60)**: Critical issues require immediate attention
+
+**Scoring factors:**
+- Critical issues: -15 points each (security vulnerabilities)
+- Warnings: -5 points each (large files, minor issues)
+- Info: -2 points each (suggestions, optimizations)
+- Bonuses: +5 points for good practices (active commits, multiple contributors)
+
+### 📝 Multiple Output Formats
+**Terminal (Default):**
+- Beautiful colored output with Unicode characters
+- Progress indicators and spinners
+- Organized sections with tables
+- Grade badges and score bars
+
+**JSON:**
+- Machine-readable format
+- Perfect for CI/CD pipelines
+- Easy integration with other tools
+- Complete data export
+
+**Markdown:**
+- Documentation-friendly format
+- Can be committed to repository
+- Readable in GitHub/GitLab
+- Great for team reports
+
+### ⚡ Performance
+- Analyzes **5,000+ files** in seconds
+- Efficient recursive directory scanning
+- Smart skip lists (`node_modules/`, `.git/`)
+- Parallel analysis where possible
+- Minimal memory footprint
 
 ## 🚀 Installation
 
@@ -39,7 +142,7 @@ npm link
 
 ## 📖 Usage
 
-### Analyze Repository
+### Basic Usage
 
 ```bash
 # Analyze current directory
@@ -48,37 +151,139 @@ repo-doctor analyze
 # Analyze specific repository
 repo-doctor analyze --path /path/to/repo
 
-# Generate JSON report
+# Quick security scan only (faster)
+repo-doctor scan
+```
+
+### Advanced Usage
+
+```bash
+# Generate JSON report for CI/CD
 repo-doctor analyze --format json --output report.json
 
-# Generate Markdown report
-repo-doctor analyze --format markdown --output report.md
+# Generate Markdown report for documentation
+repo-doctor analyze --format markdown --output HEALTH_REPORT.md
 
-# Skip security scan (faster)
+# Skip security scan (faster for large repos)
 repo-doctor analyze --skip-security
 
-# Custom thresholds
+# Skip file analysis (focus on commits and branches)
+repo-doctor analyze --skip-files
+
+# Custom thresholds for large files and stale branches
 repo-doctor analyze --max-file-size 50 --stale-branch-days 180
+
+# Deep analysis (default, can be disabled for speed)
+repo-doctor analyze --deep false
 ```
 
-### Quick Security Scan
+### Real-World Examples
+
+**1. Pre-commit Security Check:**
+```bash
+# Quick scan before committing
+repo-doctor scan
+# Exit code 1 if critical issues found, 0 if clean
+```
+
+**2. Weekly Team Report:**
+```bash
+# Generate Markdown report for team review
+repo-doctor analyze \
+  --format markdown \
+  --output weekly-health-$(date +%Y-%m-%d).md
+```
+
+**3. Large Repository Cleanup:**
+```bash
+# Find all files over 50MB for Git LFS migration
+repo-doctor analyze \
+  --max-file-size 50 \
+  --format json \
+  --output large-files.json
+```
+
+**4. Branch Cleanup Campaign:**
+```bash
+# Identify branches older than 6 months
+repo-doctor analyze \
+  --stale-branch-days 180 \
+  --format markdown \
+  --output stale-branches-report.md
+```
+
+**5. Security Audit:**
+```bash
+# Comprehensive security scan with JSON output
+repo-doctor scan --format json --output security-audit.json
+```
+
+### Output Format Conversion
 
 ```bash
-# Scan for secrets and sensitive files only
+# Save full analysis as JSON
+repo-doctor analyze --format json --output full-report.json
+
+# Later, convert to terminal view
+repo-doctor report --input full-report.json
+
+# Or convert to Markdown
+repo-doctor report --input full-report.json --format markdown --output report.md
+```
+
+### CI/CD Integration
+
+**GitHub Actions:**
+```yaml
+name: Repository Health Check
+on: [push, pull_request]
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install repo-doctor
+        run: npm install -g repo-doctor
+      - name: Run health check
+        run: repo-doctor analyze --format json --output health-report.json
+      - name: Upload report
+        uses: actions/upload-artifact@v3
+        with:
+          name: health-report
+          path: health-report.json
+```
+
+**GitLab CI:**
+```yaml
+health-check:
+  image: node:20
+  script:
+    - npm install -g repo-doctor
+    - repo-doctor analyze --format json --output health-report.json
+  artifacts:
+    reports:
+      junit: health-report.json
+```
+
+**Pre-commit Hook:**
+```bash
+#!/bin/sh
+# .git/hooks/pre-commit
+
+echo "Running security scan..."
 repo-doctor scan
 
-# Scan specific repository
-repo-doctor scan --path /path/to/repo
-```
+if [ $? -ne 0 ]; then
+  echo "❌ Security issues detected! Commit aborted."
+  echo "Run 'repo-doctor scan' to see details."
+  exit 1
+fi
 
-### Generate Report
-
-```bash
-# Convert JSON to terminal format
-repo-doctor report --input report.json
-
-# Convert JSON to Markdown
-repo-doctor report --input report.json --format markdown --output output.md
+echo "✅ Security scan passed"
 ```
 
 ## 📊 Example Output
