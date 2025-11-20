@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Configuration file for repo-doctor",
+  "ignorePatterns": [
+    "node_modules/**",
+    "dist/**",
+    "*.min.js",
+    "*.test.ts",
+    "*.spec.ts"
+  ],
+  "largeFileThreshold": 5242880,
+  "staleBranchDays": 90,
+  "securityScan": {
+    "enabled": true,
+    "customPatterns": []
+  },
+  "fileAnalysis": {
+    "enabled": true,
+    "excludeBinary": true
+  }
+}
