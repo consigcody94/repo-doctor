@@ -33,7 +33,7 @@ describe('SecurityScanner', () => {
     const results = await scanner.scan();
 
     expect(results.potentialSecrets.length).toBeGreaterThan(0);
-    expect(results.potentialSecrets[0].type).toBe('GitHub Token');
+    expect(results.potentialSecrets[0].type).toBe('GitHub Token (ghp)');
   });
 
   it('should detect sensitive files', async () => {
