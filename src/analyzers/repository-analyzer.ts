@@ -107,7 +107,10 @@ export class RepositoryAnalyzer {
 
     const oldestCommit = new Date(log.all[log.all.length - 1]?.date || Date.now());
     const newestCommit = new Date(log.all[0]?.date || Date.now());
-    const daysDiff = Math.max(1, (newestCommit.getTime() - oldestCommit.getTime()) / (1000 * 60 * 60 * 24));
+    const daysDiff = Math.max(
+      1,
+      (newestCommit.getTime() - oldestCommit.getTime()) / (1000 * 60 * 60 * 24)
+    );
     const averageCommitsPerDay = log.total / daysDiff;
 
     // Find largest commit
@@ -194,7 +197,7 @@ export class RepositoryAnalyzer {
     }
 
     return {
-      totalBranches: branches.all.filter(b => !b.includes('HEAD') && !b.includes('->')).length,
+      totalBranches: branches.all.filter((b) => !b.includes('HEAD') && !b.includes('->')).length,
       staleBranches: staleBranches.sort((a, b) => b.daysOld - a.daysOld).slice(0, 10),
       activeBranches,
       defaultBranch: currentBranch,

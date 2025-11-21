@@ -65,7 +65,8 @@ const SECRET_PATTERNS = [
   },
   {
     name: 'Slack Webhook',
-    pattern: /https:\/\/hooks\.slack\.com\/services\/T[a-zA-Z0-9_]{8}\/B[a-zA-Z0-9_]{8}\/[a-zA-Z0-9_]{24}/g,
+    pattern:
+      /https:\/\/hooks\.slack\.com\/services\/T[a-zA-Z0-9_]{8}\/B[a-zA-Z0-9_]{8}\/[a-zA-Z0-9_]{24}/g,
     severity: 'critical' as const,
   },
   {
@@ -146,7 +147,7 @@ const SECRET_PATTERNS = [
   },
   {
     name: 'Bearer Token',
-    pattern: /Bearer\s+[a-zA-Z0-9_\-\.=]+/gi,
+    pattern: /Bearer\s+[a-zA-Z0-9_\-.=]+/gi,
     severity: 'warning' as const,
   },
   {
@@ -188,7 +189,8 @@ const SECRET_PATTERNS = [
   },
   {
     name: 'Heroku API Key',
-    pattern: /heroku[_-]?api[_-]?key[_-]?[:=]\s*['"]?([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})/gi,
+    pattern:
+      /heroku[_-]?api[_-]?key[_-]?[:=]\s*['"]?([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})/gi,
     severity: 'critical' as const,
   },
   {

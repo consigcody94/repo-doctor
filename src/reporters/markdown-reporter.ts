@@ -161,7 +161,8 @@ export class MarkdownReporter {
     if (health.recommendations.length > 0) {
       sections.push('## 💡 Recommendations\n');
       health.recommendations.forEach((rec, index) => {
-        const priorityEmoji = rec.priority === 'high' ? '🔴' : rec.priority === 'medium' ? '🟡' : '🔵';
+        const priorityEmoji =
+          rec.priority === 'high' ? '🔴' : rec.priority === 'medium' ? '🟡' : '🔵';
         sections.push(`### ${index + 1}. ${rec.title} ${priorityEmoji}\n`);
         sections.push(`${rec.description}\n`);
         sections.push(`**Action:** ${rec.action}\n`);
